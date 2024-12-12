@@ -1,23 +1,21 @@
 local M = {}
 
-local has_yop, yop = pcall(require("yop"))
+local yop = require("yop")
 
-if ~has_yop then
-    vim.notify("Error: yop.nvim not found",vim.log.levels.ERROR)
-    return nil
-end
-
-local has_clue, miniclue = pcall(require("mini.clue"))
+local miniclue = nil
+local has_clue = false
 
 local function set_mapping_for_miniclue(mode, lhs, desc)
-    if desc ~= nil then
-        if mode[1] ~= nil then
-            for _, v in ipairs(mode) do
-                miniclue.set_mapping_desc(v, lhs, desc)
-            end
-        else
-            miniclue.set_mapping_desc(mode, lhs, desc)
-        end
+    if miniclue ~= nil then
+	    if desc ~= nil then
+		if mode[1] ~= nil then
+		    for _, v in ipairs(mode) do
+			miniclue.set_mapping_desc(v, lhs, desc)
+		    end
+		else
+		    miniclue.set_mapping_desc(mode, lhs, desc)
+		end
+	    end
     end
 end
 
@@ -64,7 +62,7 @@ local function disable_highlight(bufnr)
     end
 end
 
-local function do_mapping(mapping_table, default_mapping, func, default_description, disable_miniclue)
+local function do_mapping(mapping_table, default_mapping, func, default_description)
     if mapping_table ~= nil then
         local mode = mapping_table.mode or {"n","v"}
         local prefix = mapping_table.prefix or default_mapping
@@ -73,14 +71,18 @@ local function do_mapping(mapping_table, default_mapping, func, default_descript
             prefix,
             func
         )
-        if has_clue and not disable_miniclue then
+        if has_clue then
             set_mapping_for_miniclue(mode, prefix, mapping_table.desc or default_description)
         end
-
     end
 end
 
 function M.setup(config)
+
+    if config.miniclue then
+        miniclue = require("mini.clue")
+        has_clue = true
+    end
 
     if config.global_replace ~= nil then
         local global_replace = config.global_replace
@@ -96,8 +98,7 @@ function M.setup(config)
                 local keys = vim.api.nvim_replace_termcodes(command_string, true, false, true)
                 vim.api.nvim_feedkeys(keys, "n", false)
             end,
-            "Global Replace",
-            config.disable_miniclue
+            "Global Replace"
         )
     end
 
@@ -125,8 +126,7 @@ function M.setup(config)
                     enable_highlight(0,first_position[1],first_position[2],second_position[1],second_position[2],"Visual",info.type)
                 end
             end,
-            "Local Replace",
-            config.disable_miniclue
+            "Local Replace"
         )
         if local_replace.clear_mapping ~= nil then
             vim.keymap.set(
@@ -142,9 +142,7 @@ function M.setup(config)
                 end,
                 { noremap = true, silent = true }
             )
-            if not config.disable_miniclue then
-                set_mapping_for_miniclue({"n","v"},local_replace.clear_mapping,"Clear Local Replace")
-            end
+	set_mapping_for_miniclue({"n","v"},local_replace.clear_mapping,"Clear Local Replace")
         end
     end
 
