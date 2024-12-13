@@ -8,13 +8,13 @@ local has_clue = false
 local function set_mapping_for_miniclue(mode, lhs, desc)
     if miniclue ~= nil then
 	    if desc ~= nil then
-		if mode[1] ~= nil then
-		    for _, v in ipairs(mode) do
-			miniclue.set_mapping_desc(v, lhs, desc)
-		    end
-		else
-		    miniclue.set_mapping_desc(mode, lhs, desc)
-		end
+            if mode[1] ~= nil then
+                for _, v in ipairs(mode) do
+                    miniclue.set_mapping_desc(v, lhs, desc)
+                end
+            else
+                miniclue.set_mapping_desc(mode, lhs, desc)
+            end
 	    end
     end
 end
@@ -145,6 +145,50 @@ function M.setup(config)
 	set_mapping_for_miniclue({"n","v"},local_replace.clear_mapping,"Clear Local Replace")
         end
     end
+
+    if config.search ~= nil then
+        local search = config.search
+        do_mapping(
+            search,
+            "<leader>/",
+            function (lines, info)
+
+                local re_string = ""
+
+                for index, value in ipairs(lines) do
+                    re_string = re_string .. value
+                end
+
+                local keys_command = vim.api.nvim_replace_termcodes("/", true, false, true)
+                vim.api.nvim_feedkeys(keys_command, "n", false)
+
+                local keys_string = vim.api.nvim_replace_termcodes(re_string, true, false, false)
+                vim.api.nvim_feedkeys(keys_string, "n", false)
+
+                local keys_confirm = vim.api.nvim_replace_termcodes("<cr>", true, false, true)
+                vim.api.nvim_feedkeys(keys_confirm, "n", false)
+
+            end,
+            "Search Motion"
+        )
+    end
+
+    if config.white_space ~= nil then
+        local white_space = config.white_space
+        do_mapping(
+            white_space,
+            "<leader>w",
+            function (lines, info)
+                local new_lines = {}
+                for index, value in ipairs(lines) do
+                    new_lines[index] = value:gsub("%s+", "")
+                end
+                return new_lines
+            end,
+            "Remove White Space"
+        )
+    end
+
 
 end
 
