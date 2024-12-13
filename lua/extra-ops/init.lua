@@ -100,6 +100,7 @@ function M.setup(config)
 
     if config.local_replace ~= nil then
         local local_replace = config.local_replace
+        local hl = local_replace.highlight or "Visual"
         do_mapping(
             local_replace,
             "<leader>lr",
@@ -119,7 +120,7 @@ function M.setup(config)
                     looking_for_replace = true
                     first_position = info.position.first
                     second_position = info.position.last
-                    enable_highlight(0,first_position[1],first_position[2],second_position[1],second_position[2],"Visual",info.type)
+                    enable_highlight(0,first_position[1],first_position[2],second_position[1],second_position[2],hl,info.type)
                 end
             end,
             "Local Replace"
