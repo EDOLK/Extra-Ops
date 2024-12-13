@@ -110,14 +110,14 @@ function M.setup(config)
             function (lines, info)
                 if looking_for_replace then
                     looking_for_replace = false
-                    disable_highlight(0)
-                    set_visual_selection(first_position[1],first_position[2],second_position[1],second_position[2])
                     local re_string = ""
                     for index, value in ipairs(lines) do
                         re_string = re_string .. value
                     end
                     local command_string = ":s/" .. re_string .. "//gcI<Left><Left><Left><Left>"
                     local keys = vim.api.nvim_replace_termcodes(command_string, true, false, true)
+                    set_visual_selection(first_position[1],first_position[2],second_position[1],second_position[2])
+                    disable_highlight(0)
                     vim.api.nvim_feedkeys(keys, "n", false)
                 else
                     looking_for_replace = true
@@ -133,12 +133,10 @@ function M.setup(config)
                 {"n","v"},
                 local_replace.clear_mapping,
                 function()
-                    if looking_for_replace then
-                        looking_for_replace = false
-                        first_position = nil
-                        second_position = nil
-                        disable_highlight(0)
-                    end
+                    looking_for_replace = false
+                    first_position = nil
+                    second_position = nil
+                    disable_highlight(0)
                 end,
                 { noremap = true, silent = true }
             )
