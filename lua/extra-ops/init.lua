@@ -3,7 +3,6 @@ local M = {}
 local yop = require("yop")
 
 local miniclue = nil
-local has_clue = false
 
 local function set_mapping_for_miniclue(mode, lhs, desc)
     if miniclue ~= nil then
@@ -71,9 +70,7 @@ local function do_mapping(mapping_table, default_mapping, func, default_descript
             prefix,
             func
         )
-        if has_clue then
-            set_mapping_for_miniclue(mode, prefix, mapping_table.desc or default_description)
-        end
+        set_mapping_for_miniclue(mode, prefix, mapping_table.desc or default_description)
     end
 end
 
@@ -81,7 +78,6 @@ function M.setup(config)
 
     if config.miniclue then
         miniclue = require("mini.clue")
-        has_clue = true
     end
 
     if config.global_replace ~= nil then
