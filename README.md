@@ -4,23 +4,20 @@ A few new operators that you may find useful.
 Global Replace: Opens your motion in a global substitute command:
 ```
 %s:YOUR_MOTION/|/gcI
-               ^
-             cursor
 ```
 Local Replace: First use marks given motion for local replace, second use replaces within marked area:
-WIP
 
-Search: Searches for given motion like *.
+Search: Searches for given motion like *:
 ```
 /YOUR_MOTION
 ```
-White Space: Removes whitespace from given motion (this includes indentation).
+White Space: Removes whitespace from given motion (this includes indentation):
 ```
-Test (var1, var2, var3) 
+Test ([v]ar1, var2, var3) 
 
 <leader>wi(
 
-Test (var1,var2,var3)
+Test ([v]ar1,var2,var3)
 ```
 
 ## Installation
@@ -52,6 +49,7 @@ require("extra-ops").setup({
         mode = {"n","v"}
         prefix = "<leader>lr"
         clear_mapping = "<leader>lc"
+        highlight = "Visual"
     },
     search = {
         mode = {"n","v"}
