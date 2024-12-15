@@ -1,11 +1,14 @@
 # Extra-Ops
 A few new operators that you may find useful.
 
-Global Replace: Opens your motion in a global substitute command:
-```
-%s:YOUR_MOTION/|/gcI
-```
+Global Replace: Opens your motion in a global substitute command,
+
 Local Replace: First use marks given motion for local replace, second use replaces within marked area:
+
+
+https://github.com/user-attachments/assets/bd5a9b3f-1cca-491b-98be-3df15a977dec
+
+
 
 Search: Searches for given motion like *:
 ```
