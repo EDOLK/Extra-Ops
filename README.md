@@ -3,6 +3,7 @@ A few new operators that you may find useful.
 
 Global Replace: Opens your motion in a global substitute command,
 
+
 Local Replace: First use marks given motion for local replace, second use replaces within marked area:
 
 
@@ -42,8 +43,9 @@ All operators are explicitly opt-in, if you don't want a particular operator, si
 All options within each operator have defaults and are optional.
 
 ```lua
+-- Default Config:
 require("extra-ops").setup({
-    miniclue = true, -- Optional, set to false or remove if you don't have mini.clue
+    disable_miniclue = false,
     global_replace = {
         mode = {"n","v"}
         prefix = "<leader>gr"

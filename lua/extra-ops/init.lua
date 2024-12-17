@@ -1,11 +1,18 @@
 local M = {}
 
-local yop = require("yop")
+-- local yop = require("yop")
 
-local miniclue = nil
+local has_yop, yop = pcall(require,"yop")
+
+if not has_yop then
+    vim.notify("error: yop not found")
+    return
+end
+
+local has_miniclue, miniclue = pcall(require, "mini.clue")
 
 local function set_mapping_for_miniclue(mode, lhs, desc)
-    if miniclue ~= nil then
+    if has_miniclue then
 	    if desc ~= nil then
             if mode[1] ~= nil then
                 for _, v in ipairs(mode) do
@@ -36,20 +43,20 @@ end
 
 local namespace_id = vim.api.nvim_create_namespace("temporary_highlight")
 
-local function enable_highlight(bufnr, start_line, start_col, end_line, end_col, highlight_group, type)
+local function enable_highlight(bufnr, start_line, start_col, end_line, end_col, hl_group, type)
     start_line,start_col=start_line-1,start_col-1
     if type == "char" then
         end_line = end_line - 1
         vim.api.nvim_buf_set_extmark(bufnr, namespace_id, start_line, start_col, {
             end_line = end_line,
             end_col = end_col,
-            hl_group = highlight_group,
+            hl_group = hl_group,
             hl_eol = true,
         })
     else
         vim.api.nvim_buf_set_extmark(bufnr, namespace_id, start_line, start_col, {
             end_line = end_line,
-            hl_group = highlight_group,
+            hl_group = hl_group,
             hl_eol = true,
         })
     end
@@ -76,8 +83,8 @@ end
 
 function M.setup(config)
 
-    if config.miniclue then
-        miniclue = require("mini.clue")
+    if config.disable_miniclue then
+        has_miniclue = false
     end
 
     if config.global_replace ~= nil then
@@ -137,7 +144,7 @@ function M.setup(config)
                 end,
                 { noremap = true, silent = true }
             )
-	set_mapping_for_miniclue({"n","v"},local_replace.clear_mapping,"Clear Local Replace")
+            set_mapping_for_miniclue({"n","v"},local_replace.clear_mapping,"Clear Local Replace")
         end
     end
 
