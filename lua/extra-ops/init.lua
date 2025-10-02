@@ -68,7 +68,8 @@ local function do_mapping(mapping_table, default_mapping, func, default_descript
         yop.op_map(
             mode,
             prefix,
-            func
+            func,
+            {desc = default_description}
         )
         set_mapping_for_miniclue(mode, prefix, mapping_table.desc or default_description)
     end
@@ -141,14 +142,14 @@ function M.setup(config)
         end
     end
 
-    if config.search ~= nil then
-        local search = config.search
+    if config.search_forward ~= nil then
+        local search_forward = config.search_forward
         do_mapping(
-            search,
+            search_forward,
             "<leader>/",
             function (lines, info)
 
-                local re_string = ""
+                local re_string = "\\V"
 
                 for index, value in ipairs(lines) do
                     re_string = re_string .. value
@@ -164,7 +165,34 @@ function M.setup(config)
                 vim.api.nvim_feedkeys(keys_confirm, "n", false)
 
             end,
-            "Search Motion"
+            "Search Motion Forward"
+        )
+    end
+
+    if config.search_backward ~= nil then
+        local search_backward = config.search_backward
+        do_mapping(
+            search_backward,
+            "<leader>/",
+            function (lines, info)
+
+                local re_string = "\\V"
+
+                for index, value in ipairs(lines) do
+                    re_string = re_string .. value
+                end
+
+                local keys_command = vim.api.nvim_replace_termcodes("?", true, false, true)
+                vim.api.nvim_feedkeys(keys_command, "n", false)
+
+                local keys_string = vim.api.nvim_replace_termcodes(re_string, true, false, false)
+                vim.api.nvim_feedkeys(keys_string, "n", false)
+
+                local keys_confirm = vim.api.nvim_replace_termcodes("<cr>", true, false, true)
+                vim.api.nvim_feedkeys(keys_confirm, "n", false)
+
+            end,
+            "Search Motion Backword"
         )
     end
 
